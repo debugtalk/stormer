@@ -6,6 +6,7 @@ import gevent
 from locust import runners
 from locust import events, web
 from locust.main import version, load_locustfile
+from locust.stats import print_percentile_stats, print_error_report, print_stats
 from locust_wrapper.dummy_options import master_options, slave_options
 from locust_wrapper.logger import logger
 
@@ -15,45 +16,31 @@ def parse_locustfile(locustfile):
     locust_classes = locusts.values()
     return locust_classes
 
-def shutdown(code=0):
-    """
-    Shut down locust by firing quitting event
-    """
-    logger.info("Shutting down (exit code %s), bye." % code)
-    events.quitting.fire()
-    sys.exit(code)
-
-def run(main_greenlet):
-    # install SIGTERM handler
-    def sig_term_handler():
-        logger.info("Got SIGTERM signal")
-        shutdown(0)
-    gevent.signal(signal.SIGTERM, sig_term_handler)
-
-    try:
-        main_greenlet.join()
-        code = 0
-        if len(runners.locust_runner.errors):
-            code = 1
-        shutdown(code=code)
-    except KeyboardInterrupt:
-        shutdown(0)
-
 def start_master(locust_classes):
     logger.info("Starting web monitor at {}:{}".format(
         master_options.web_host or "*", master_options.port))
-    main_greenlet = gevent.spawn(web.start, locust_classes, master_options)
+    master_greenlet = gevent.spawn(web.start, locust_classes, master_options)
     runners.locust_runner = runners.MasterLocustRunner(locust_classes, master_options)
-    run(main_greenlet)
+    try:
+        master_greenlet.join()
+    except KeyboardInterrupt:
+        events.quitting.fire()
+        print_stats(runners.locust_runner.request_stats)
+        print_percentile_stats(runners.locust_runner.request_stats)
+        print_error_report()
+        sys.exit(0)
 
 def start_slave(locust_classes):
+    runners.locust_runner = runners.SlaveLocustRunner(locust_classes, slave_options)
+    slave_greenlet = runners.locust_runner.greenlet
     try:
-        runners.locust_runner = runners.SlaveLocustRunner(locust_classes, slave_options)
-        main_greenlet = runners.locust_runner.greenlet
-        run(main_greenlet)
+        slave_greenlet.join()
     except socket.error as ex:
         logger.error("Failed to connect to the Locust master: %s", ex)
         sys.exit(-1)
+    except KeyboardInterrupt:
+        events.quitting.fire()
+        sys.exit(0)
 
 
 class LocustStarter(object):
@@ -73,4 +60,4 @@ class LocustStarter(object):
         try:
             p_master.join()
         except KeyboardInterrupt:
-            pass
+            sys.exit(0)

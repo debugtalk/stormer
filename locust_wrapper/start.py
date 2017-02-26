@@ -70,4 +70,7 @@ class LocustStarter(object):
             p_slave = Process(target=start_slave, args=(locust_classes,))
             p_slave.start()
 
-        p_master.join()
+        try:
+            p_master.join()
+        except KeyboardInterrupt:
+            pass

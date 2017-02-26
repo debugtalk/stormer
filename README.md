@@ -20,7 +20,7 @@ optional arguments:
 ## example
 
 ```text
-$ python main.py -f demo_task.py --slaves_num 4
+$ python main.py -f examples/demo_task.py --slaves_num 4
 [2017-02-26 10:52:04,875] Leos-MacBook-Air.local/INFO/logger: Starting Locust 0.8a2
 [2017-02-26 10:52:04,897] Leos-MacBook-Air.local/INFO/logger: Starting web monitor at *:8089
 [2017-02-26 01:32:15,757] Leos-MacBook-Air.local/INFO/locust.runners: Client 'Leos-MacBook-Air.local_9cfcb5acf942af4b52063c138952a999' reported as ready. Current

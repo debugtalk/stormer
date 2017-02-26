@@ -6,8 +6,14 @@ import gevent
 from locust import runners
 from locust import events, web
 from locust.main import version, load_locustfile
-from dummy_options import master_options, slave_options
-from logger import logger
+from locust_wrapper.dummy_options import master_options, slave_options
+from locust_wrapper.logger import logger
+
+
+def parse_locustfile(locustfile):
+    docstring, locusts = load_locustfile(locustfile)
+    locust_classes = locusts.values()
+    return locust_classes
 
 def shutdown(code=0):
     """
@@ -51,20 +57,17 @@ def start_slave(locust_classes):
 
 
 class LocustStarter(object):
-    def __init__(self, locustfile):
+    def __init__(self):
         logger.info("Starting Locust %s" % version)
-        docstring, locusts = load_locustfile(locustfile)
-        self.locust_classes = locusts.values()
 
-    def start(self, slaves_num=1):
-        p_master = Process(target=start_master, args=(self.locust_classes,))
+    def start(self, locustfile, slaves_num=1):
+        locust_classes = parse_locustfile(locustfile)
+
+        p_master = Process(target=start_master, args=(locust_classes,))
         p_master.start()
 
         for _ in range(slaves_num):
-            p_slave = Process(target=start_slave, args=(self.locust_classes,))
+            p_slave = Process(target=start_slave, args=(locust_classes,))
             p_slave.start()
 
         p_master.join()
-
-if __name__ == '__main__':
-    LocustStarter(locustfile='demo_task.py').start(slaves_num=4)

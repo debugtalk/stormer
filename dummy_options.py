@@ -34,6 +34,6 @@ class DummySlaveOptions(DummyOptions):
         super(DummySlaveOptions, self).__init__()
         self.slave = True
 
-dummy_options = DummyOptions()
+default_options = DummyOptions()
 master_options = DummyMasterOptions()
 slave_options = DummySlaveOptions()

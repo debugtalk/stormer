@@ -2,17 +2,12 @@ import sys
 import signal
 from multiprocessing import Process
 import socket
-import logging
 import gevent
 from locust import runners
 from locust import events, web
-from locust.main import version, is_locust, load_locustfile
-from locust.log import setup_logging
-from dummy_options import dummy_options, master_options, slave_options
-
-# setup logging
-setup_logging(dummy_options.loglevel, dummy_options.logfile)
-logger = logging.getLogger(__name__)
+from locust.main import version, load_locustfile
+from dummy_options import master_options, slave_options
+from logger import logger
 
 def shutdown(code=0):
     """

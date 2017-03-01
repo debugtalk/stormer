@@ -41,13 +41,11 @@ class UserBehavior(TaskSet):
             except:
                 resp.failure("failed to get token, status_code: {}, msg: {}".format(resp.status_code, resp.text))
 
-    def test_get_url(self, url, name=None, get_key=None):
+    def test_get_url(self, url, name=None):
         with self.client.get(url, name=name, catch_response=True, **self.kwargs) as resp:
             try:
                 resp_json = json.loads(resp.text)
                 assert resp_json['status'] == 0
-                if get_key:
-                    return resp_json[get_key]
             except:
                 resp.failure("failed to GET url: {}, status_code: {}, msg: {}".format(url, resp.status_code, resp.text))
 
@@ -167,14 +165,22 @@ class UserBehavior(TaskSet):
         if not post_success:
             return
 
-        account['uuid'] = self.test_get_url(url='/api/v1/my', get_key='id')
+        with self.client.get(url='/api/v1/my', catch_response=True, **self.kwargs) as resp:
+            try:
+                resp_json = json.loads(resp.text)
+                assert resp_json['status'] == 0
+                account['uuid'] = resp_json['id']
+                account['rongyun_id'] = resp_json['rongyun_id']
+            except:
+                resp.failure("failed to GET /api/v1/my, status_code: {}, msg: {}".format(resp.status_code, resp.text))
+                return
 
         self.test_get_url('/api/v1/users/info')
         self.test_get_url('/api/v1/my/config')
 
         self.questionnaires()
 
-        self.test_get_url('/api/v1/users?id=&rongyun_id=69318500-0206-457e-9149-11021c8c7e29')
+        self.test_get_url('/api/v1/users?id=&rongyun_id={}'.format(account['rongyun_id']), name='/api/v1/users')
         self.test_get_url('/api/v1/my/get_my_hint_with_icon')
         self.test_get_url('/api/v1/my/config')
         self.test_get_url('/api/v1/daily_contents?page=1&page_size=20')

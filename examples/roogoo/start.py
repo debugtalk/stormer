@@ -185,6 +185,7 @@ class UserBehavior(TaskSet):
     @task
     def test_register(self):
         try:
+            self.kwargs['headers']['Token'] = self.get_token()
             account = {
                 'country_code': '852',
                 'phone_no': '1%010d' % int(time.time() * 1000000 % (10 ** 10))

@@ -21,6 +21,7 @@ class UserBehavior(TaskSet):
             'verify': False
         }
         self.kwargs['headers']['Token'] = self.get_token()
+        self.account = self.test_register()
 
     def get_token(self):
         device_sn = '{}-{}-{}-{}-{}'.format(get_random_str(8), get_random_str(4), get_random_str(4), get_random_str(4), get_random_str(12))
@@ -85,7 +86,7 @@ class UserBehavior(TaskSet):
         self.test_get_url('/api/v1/daily_contents?page=1&page_size=20')
         self.test_get_url('/api/v1/notifications/unread?version=v2')
         self.test_get_url('/api/v1/users/info')
-        self.test_get_url(url='/api/v1/punishments/banned_user_info?user_uuids%5B%5D={}'.format(account['uuid']), name='banned_user_info')
+        self.test_get_url(url='/api/v1/punishments/banned_user_info?user_uuids%5B%5D={}'.format(account['id']), name='banned_user_info')
         self.test_get_url('/api/v1/punishments')
         self.test_get_url('/api/v1/multistage_tests/delta_questionnaires?detail=0')
         self.test_get_url('/api/v1/black_house/my')
@@ -169,7 +170,7 @@ class UserBehavior(TaskSet):
             try:
                 resp_json = json.loads(resp.text)
                 assert resp_json['status'] == 0
-                account['uuid'] = resp_json['id']
+                account['id'] = resp_json['id']
                 account['rongyun_id'] = resp_json['rongyun_id']
             except:
                 resp.failure("failed to GET /api/v1/my, status_code: {}, msg: {}".format(resp.status_code, resp.text))
@@ -182,7 +183,7 @@ class UserBehavior(TaskSet):
 
         return account
 
-    @task
+    # @task
     def test_register(self):
         try:
             self.kwargs['headers']['Token'] = self.get_token()
@@ -192,21 +193,15 @@ class UserBehavior(TaskSet):
             }
             account = self.register(account)
             # self.logout()
-            # self.locust.registered_users_queue.put(account)
+            return account
         except queue.Empty:
             print("Register account data run out !!!")
             exit(0)
 
-    # @task
+    @task
     def test_login_and_logout(self):
-        try:
-            account = self.locust.registered_users_queue.get_nowait()
-            self.login(account)
-            # self.logout()
-            self.locust.registered_users_queue.put_nowait(account)
-        except queue.Empty:
-            print("Login account data run out !!!")
-            time.sleep(5)
+        self.login(self.account)
+        self.logout()
 
 class WebsiteUser(HttpLocust):
     # host = 'https://api-test.roogooapp.com'
@@ -215,6 +210,5 @@ class WebsiteUser(HttpLocust):
     avatar_file = os.path.join(dir_path, 'sky.jpg')
     avatar_content = open(avatar_file, 'rb')
     task_set = UserBehavior
-    registered_users_queue = queue.Queue()
     min_wait = 1000
     max_wait = 3000

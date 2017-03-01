@@ -174,8 +174,8 @@ class UserBehavior(TaskSet):
 
         self.questionnaires()
 
-        self.client.get('/api/v1/users?id=&rongyun_id=69318500-0206-457e-9149-11021c8c7e29')
-        self.client.get('/api/v1/my/get_my_hint_with_icon')
+        self.test_get_url('/api/v1/users?id=&rongyun_id=69318500-0206-457e-9149-11021c8c7e29')
+        self.test_get_url('/api/v1/my/get_my_hint_with_icon')
         self.test_get_url('/api/v1/my/config')
         self.test_get_url('/api/v1/daily_contents?page=1&page_size=20')
         self.test_get_url('/api/v1/notifications/unread?version=v2')
@@ -193,9 +193,8 @@ class UserBehavior(TaskSet):
                 'country_code': '852',
                 'phone_no': '1%010d' % int(time.time() * 1000000 % (10 ** 10))
             }
-            # account = self.locust.user_data_queue.get_nowait()
             account = self.register(account)
-            self.logout()
+            # self.logout()
             # self.locust.registered_users_queue.put(account)
         except queue.Empty:
             print("Register account data run out !!!")
@@ -206,7 +205,7 @@ class UserBehavior(TaskSet):
         try:
             account = self.locust.registered_users_queue.get_nowait()
             self.login(account)
-            self.logout()
+            # self.logout()
             self.locust.registered_users_queue.put_nowait(account)
         except queue.Empty:
             print("Login account data run out !!!")
@@ -219,7 +218,6 @@ class WebsiteUser(HttpLocust):
     avatar_file = os.path.join(dir_path, 'sky.jpg')
     avatar_content = open(avatar_file, 'rb')
     task_set = UserBehavior
-    # user_data_queue = init_user_data_queue()
     registered_users_queue = queue.Queue()
     min_wait = 1000
     max_wait = 3000

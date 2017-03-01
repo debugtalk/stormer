@@ -180,16 +180,6 @@ class UserBehavior(TaskSet):
 
         self.questionnaires()
 
-        self.test_get_url('/api/v1/users?id=&rongyun_id={}'.format(account['rongyun_id']), name='/api/v1/users')
-        self.test_get_url('/api/v1/my/get_my_hint_with_icon')
-        self.test_get_url('/api/v1/my/config')
-        self.test_get_url('/api/v1/daily_contents?page=1&page_size=20')
-        self.test_get_url('/api/v1/notifications/unread?version=v2')
-        self.test_get_url('/api/v1/customized_recommendations?distance=0&gender=2&max_age=99999&min_age=0&online_time=4320&page=1&pagesize=20')
-        self.test_get_url('/api/v1/punishments')
-        self.test_get_url('/api/v1/multistage_tests/delta_questionnaires?detail=0')
-        self.test_get_url('/api/v1/my/recommend_friends?distance=0&gender=2&max_age=200&min_age=0&online_time=4320&page=1')
-
         return account
 
     @task

@@ -1,5 +1,14 @@
 # LocustWrapper
+
 A wrapper for making locustio more convenient to use.
+
+## install
+
+LocustWrapper is based on [`locustio`](https://github.com/locustio/locust), so you need to install `locust` dependencies first.
+
+```bash
+$ pip install -r requirements.txt --upgrade
+```
 
 ## usage
 

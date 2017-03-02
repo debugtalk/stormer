@@ -1,5 +1,5 @@
 # LocustWrapper
-A wrapper for making locustio more convienient to use.
+A wrapper for making locustio more convenient to use.
 
 ## usage
 
@@ -13,6 +13,8 @@ optional arguments:
   -h, --help            show this help message and exit
   -f LOCUSTFILE, --locustfile LOCUSTFILE
                         Specify locust file to run test.
+  -P PORT, --port PORT, --web-port PORT
+                        Port on which to run web host.
   --slaves_num SLAVES_NUM
                         Specify number of locust slaves.
 ```

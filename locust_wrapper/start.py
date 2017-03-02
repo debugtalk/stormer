@@ -47,8 +47,10 @@ class LocustStarter(object):
     def __init__(self):
         logger.info("Starting Locust %s" % version)
 
-    def start(self, locustfile, slaves_num=1):
+    def start(self, locustfile, port=None, slaves_num=1):
         locust_classes = parse_locustfile(locustfile)
+        if port:
+            master_options.port = port
 
         p_master = Process(target=start_master, args=(locust_classes,))
         p_master.start()

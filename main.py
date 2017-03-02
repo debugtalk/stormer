@@ -11,6 +11,8 @@ def parse_args():
 
     parser.add_argument('-f', '--locustfile', dest="locustfile",
                         help="Specify locust file to run test.")
+    parser.add_argument('-P', '--port', '--web-port', dest="port", default='',
+                        help="Port on which to run web host.")
     parser.add_argument('--slaves_num', dest="slaves_num", default='1',
                         help="Specify number of locust slaves.")
 
@@ -23,9 +25,12 @@ def main():
     if locustfile is None:
         logger.error("locustfile must be specified! use the -f option.")
         sys.exit(0)
+
+    port = args.port.strip()
+    port = int(port) if port.isdigit() else None
     slaves_num = int(args.slaves_num.strip())
 
-    LocustStarter().start(locustfile=locustfile, slaves_num=slaves_num)
+    LocustStarter().start(locustfile=locustfile, port=port, slaves_num=slaves_num)
 
 
 if __name__ == '__main__':

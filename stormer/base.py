@@ -1,3 +1,11 @@
+import yaml
+from stormer.logger import loglevel, logfile
+
+def parse_yaml(yamlfile):
+    with open(yamlfile) as stream:
+        return yaml.load(stream)
+
+
 class DummyOptions(object):
     def __init__(self):
         self.host = None
@@ -14,8 +22,8 @@ class DummyOptions(object):
         self.num_clients = 1
         self.hatch_rate = 1
         self.num_requests = None
-        self.loglevel = "INFO"
-        self.logfile = None
+        self.loglevel = loglevel
+        self.logfile = logfile
         self.print_stats = False
         self.only_summary = False
         self.no_reset_stats = False

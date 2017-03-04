@@ -1,22 +1,40 @@
-# LocustWrapper
+# Stormer
 
-A wrapper for making locustio more convenient to use.
+Wrappers for making load test more convienient.
 
 ## install
 
-LocustWrapper is based on [`locustio`](https://github.com/locustio/locust), so you need to install `locust` dependencies first.
+Stormer is based on [`locustio`](https://github.com/locustio/locust), so you need to install `locust` dependencies first.
 
 ```bash
 $ pip install -r requirements.txt --upgrade
 ```
 
-## usage
+## usages
+
+Currently, Stormer supports two subcommands.
 
 ```text
 $ python main.py -h
-usage: main.py [-h] [-f LOCUSTFILE] [--slaves_num SLAVES_NUM]
+usage: main.py [-h] {locust,sput} ...
 
-A wrapper for making locustio more convienient to use.
+Wrappers for making load test more convienient.
+
+positional arguments:
+  {locust,sput}  sub-command help
+    locust       locust wrapper.
+    sput         scp wrapper for putting files.
+
+optional arguments:
+  -h, --help     show this help message and exit
+```
+
+`locust` usage.
+
+```text
+$ usage: main.py locust [-h] [-f LOCUSTFILE] [-P PORT] [--slaves_num SLAVES_NUM]
+
+Start locust master and specified number of slaves with one command.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -28,10 +46,30 @@ optional arguments:
                         Specify number of locust slaves.
 ```
 
-## example
+`sput` usage.
 
 ```text
-$ python main.py -f examples/demo_task.py --slaves_num 4
+$ python main.py sput -h
+usage: main.py sput [-h] [--hostsfile HOSTSFILE] [--localpath LOCALPATH] [--remotepath REMOTEPATH]
+
+Copy local file/directory to remote host with ssh.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --hostsfile HOSTSFILE
+                        Specify hosts file to handle.
+  --localpath LOCALPATH
+                        Specify localpath of file or directory to transfer.
+  --remotepath REMOTEPATH
+                        Specify remotepath of file or directory to transfer.
+```
+
+## example
+
+Start locust master and 4 locust slaves.
+
+```text
+$ python main.py locust -f examples/demo_task.py --slaves_num 4
 [2017-02-26 10:52:04,875] Leos-MacBook-Air.local/INFO/logger: Starting Locust 0.8a2
 [2017-02-26 10:52:04,897] Leos-MacBook-Air.local/INFO/logger: Starting web monitor at *:8089
 [2017-02-26 01:32:15,757] Leos-MacBook-Air.local/INFO/locust.runners: Client 'Leos-MacBook-Air.local_9cfcb5acf942af4b52063c138952a999' reported as ready. Current
@@ -42,4 +80,11 @@ ly 2 clients ready to swarm.
 ly 3 clients ready to swarm.
 [2017-02-26 01:32:15,782] Leos-MacBook-Air.local/INFO/locust.runners: Client 'Leos-MacBook-Air.local_cc9d414341823d0e9421679b5f9dd4c4' reported as ready. Current
 ly 4 clients ready to swarm.
+```
+
+Copy local directory to all remote hosts.
+
+```text
+$ python main.py sput --hostsfile examples/hosts.yml --localpath ~/MyProjects/test_dir --remotepa
+th /root/test_dir
 ```

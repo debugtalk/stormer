@@ -7,9 +7,8 @@ from locust import runners
 from locust import events, web
 from locust.main import version, load_locustfile
 from locust.stats import print_percentile_stats, print_error_report, print_stats
-from locust_wrapper.dummy_options import master_options, slave_options
-from locust_wrapper.logger import logger
-
+from stormer.base import master_options, slave_options
+from stormer.logger import logger
 
 def parse_locustfile(locustfile):
     docstring, locusts = load_locustfile(locustfile)

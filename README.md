@@ -47,8 +47,12 @@ optional arguments:
   -f LOCUSTFILE, --locustfile LOCUSTFILE
                         Specify locust file to run test.
   -P PORT, --port PORT, --web-port PORT
-                        Port on which to run web host.
-  --slaves-num SLAVES-NUM
+                        Port on which to run web host, default is 8089.
+  --slave-only          Only start locust slaves.
+  --master-host MASTER_HOST
+                        Host or IP address of locust master for distributed
+                        load testing.
+  --slaves-num SLAVES_NUM
                         Specify number of locust slaves.
 ```
 
@@ -86,6 +90,12 @@ ly 2 clients ready to swarm.
 ly 3 clients ready to swarm.
 [2017-02-26 01:32:15,782] Leos-MacBook-Air.local/INFO/locust.runners: Client 'Leos-MacBook-Air.local_cc9d414341823d0e9421679b5f9dd4c4' reported as ready. Current
 ly 4 clients ready to swarm.
+```
+
+Only start 4 locust slaves and connect to locust master.
+
+```text
+$ python main.py locust -f examples/demo_task.py --slaves-only --master-host <master-host-ip> --slaves-num 4
 ```
 
 Copy local directory to all remote hosts.

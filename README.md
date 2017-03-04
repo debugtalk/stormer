@@ -2,15 +2,21 @@
 
 Wrappers for making load test more convienient.
 
-## install
+## Features
 
-Stormer is based on [`locustio`](https://github.com/locustio/locust), so you need to install `locust` dependencies first.
+- Start locust master and specified number of slaves at once.
+- Overwrite test scripts on all remote machines with ease.
+- Download remote file/directory to local path.
+
+## Dependencies
+
+Stormer is mainly based on [`locustio`](https://github.com/locustio/locust) and [`paramiko`](https://github.com/paramiko/paramiko/), you can install all dependencies through `requirements.txt`.
 
 ```bash
 $ pip install -r requirements.txt --upgrade
 ```
 
-## usages
+## Usages
 
 Currently, Stormer supports two subcommands.
 
@@ -29,7 +35,7 @@ optional arguments:
   -h, --help     show this help message and exit
 ```
 
-`locust` usage.
+`locust` usage: Start locust master and specified number of slaves with one command.
 
 ```text
 $ usage: main.py locust [-h] [-f LOCUSTFILE] [-P PORT] [--slaves_num SLAVES_NUM]
@@ -46,13 +52,13 @@ optional arguments:
                         Specify number of locust slaves.
 ```
 
-`sput` usage.
+`sput` usage: Copy local file/directory to remote machines and overwrite.
 
 ```text
 $ python main.py sput -h
 usage: main.py sput [-h] [--hostsfile HOSTSFILE] [--localpath LOCALPATH] [--remotepath REMOTEPATH]
 
-Copy local file/directory to remote host with ssh.
+Copy local file/directory to remote machines and overwrite.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -64,7 +70,7 @@ optional arguments:
                         Specify remotepath of file or directory to transfer.
 ```
 
-## example
+## Examples
 
 Start locust master and 4 locust slaves.
 
@@ -85,6 +91,6 @@ ly 4 clients ready to swarm.
 Copy local directory to all remote hosts.
 
 ```text
-$ python main.py sput --hostsfile examples/hosts.yml --localpath ~/MyProjects/test_dir --remotepa
-th /root/test_dir
+$ python main.py sput --hostsfile examples/hosts.yml --localpath examples --remotepa
+th /root/examples
 ```

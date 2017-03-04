@@ -38,7 +38,7 @@ optional arguments:
 `locust` usage: Start locust master and specified number of slaves with one command.
 
 ```text
-$ usage: main.py locust [-h] [-f LOCUSTFILE] [-P PORT] [--slaves_num SLAVES_NUM]
+$ usage: main.py locust [-h] [-f LOCUSTFILE] [-P PORT] [--slaves-num SLAVES-NUM]
 
 Start locust master and specified number of slaves with one command.
 
@@ -48,7 +48,7 @@ optional arguments:
                         Specify locust file to run test.
   -P PORT, --port PORT, --web-port PORT
                         Port on which to run web host.
-  --slaves_num SLAVES_NUM
+  --slaves-num SLAVES-NUM
                         Specify number of locust slaves.
 ```
 
@@ -75,7 +75,7 @@ optional arguments:
 Start locust master and 4 locust slaves.
 
 ```text
-$ python main.py locust -f examples/demo_task.py --slaves_num 4
+$ python main.py locust -f examples/demo_task.py --slaves-num 4
 [2017-02-26 10:52:04,875] Leos-MacBook-Air.local/INFO/logger: Starting Locust 0.8a2
 [2017-02-26 10:52:04,897] Leos-MacBook-Air.local/INFO/logger: Starting web monitor at *:8089
 [2017-02-26 01:32:15,757] Leos-MacBook-Air.local/INFO/locust.runners: Client 'Leos-MacBook-Air.local_9cfcb5acf942af4b52063c138952a999' reported as ready. Current

@@ -46,19 +46,22 @@ class LocustStarter(object):
     def __init__(self):
         logger.info("Starting Locust %s" % version)
 
-    def start(self, locustfile, port=None, slaves_num=1):
-        locust_classes = parse_locustfile(locustfile)
-        if port:
-            master_options.port = port
+    def start(self, args):
+        locust_classes = parse_locustfile(args.locustfile)
+        if args.port:
+            master_options.port = args.port
 
-        p_master = Process(target=start_master, args=(locust_classes,))
-        p_master.start()
-
-        for _ in range(slaves_num):
+        for _ in range(args.slaves_num):
             p_slave = Process(target=start_slave, args=(locust_classes,))
             p_slave.start()
 
         try:
-            p_master.join()
+            if not args.slave_only:
+                master_options.master_host = args.master_host
+                p_master = Process(target=start_master, args=(locust_classes,))
+                p_master.start()
+                p_master.join()
+            else:
+                p_slave.join()
         except KeyboardInterrupt:
             sys.exit(0)

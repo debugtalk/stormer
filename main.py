@@ -17,14 +17,18 @@ def main():
         description='Start locust master and specified number of slaves with one command.')
     locust_subparser.add_argument('-f', '--locustfile', dest="locustfile",
                                   help="Specify locust file to run test.")
-    locust_subparser.add_argument('-P', '--port', '--web-port', dest="port", default='',
-                                  help="Port on which to run web host.")
-    locust_subparser.add_argument('--slaves_num', dest="slaves_num", default='1',
+    locust_subparser.add_argument('-P', '--port', '--web-port', dest="port", default='8089',
+                                  help="Port on which to run web host, default is 8089.")
+    locust_subparser.add_argument('--slave-only', action='store_true', dest="slave_only", default=False,
+                                  help="Only start locust slaves.")
+    locust_subparser.add_argument('--master-host', dest="master_host", default='127.0.0.1',
+                                  help="Host or IP address of locust master for distributed load testing.")
+    locust_subparser.add_argument('--slaves-num', dest="slaves_num", default='1',
                                   help="Specify number of locust slaves.")
     locust_subparser.set_defaults(func=main_locust)
 
     sput_subparser = subparsers.add_parser('sput', help='scp wrapper for putting files.',
-        description='Copy local file/directory to remote host with ssh.')
+        description='Copy local file/directory to remote machines and overwrite.')
     sput_subparser.add_argument('--hostsfile', dest="hostsfile",
                                 help="Specify hosts file to handle.")
     sput_subparser.add_argument('--localpath', dest="localpath",
@@ -44,11 +48,12 @@ def main_locust(args):
         logger.error("locustfile must be specified! use the -f option.")
         sys.exit(0)
 
+    args.locustfile = locustfile.strip()
     port = args.port.strip()
-    port = int(port) if port.isdigit() else None
-    slaves_num = int(args.slaves_num.strip())
+    args.port = int(port) if port.isdigit() else None
+    args.slaves_num = int(args.slaves_num.strip())
 
-    LocustStarter().start(locustfile=locustfile.strip(), port=port, slaves_num=slaves_num)
+    LocustStarter().start(args)
 
 def main_sput(args):
     hostsfile = args.hostsfile

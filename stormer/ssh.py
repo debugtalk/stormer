@@ -40,7 +40,9 @@ class SSHConnector(paramiko.SSHClient):
     def put_file(self, localfile, remotefile):
         remote_dirpath = os.path.dirname(remotefile)
         if remote_dirpath == '':
-            remotefile = os.path.join('~', remotefile)
+            output = self.exec_cmd('pwd')
+            remote_home_dir = output[0].rstrip()
+            remotefile = os.path.join(remote_home_dir, remotefile)
         else:
             cmd_check_dir = 'test -d {} && echo "ISDIR" || echo "NOTDIR"'.format(remote_dirpath)
             output = self.exec_cmd(cmd_check_dir)

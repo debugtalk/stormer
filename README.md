@@ -53,7 +53,8 @@ optional arguments:
                         Host or IP address of locust master for distributed
                         load testing.
   --slaves-num SLAVES_NUM
-                        Specify number of locust slaves.
+                        Specify number of locust slaves, default to machine's
+                        cpu count.
 ```
 
 `sput` usage: Copy local file/directory to remote machines and overwrite.
@@ -76,10 +77,10 @@ optional arguments:
 
 ## Examples
 
-Start locust master and 4 locust slaves.
+Start locust master and locust slaves, the slaves number is equal to the machine's cpu count.
 
 ```text
-$ python main.py locust -f examples/demo_task.py --slaves-num 4
+$ python main.py locust -f examples/demo_task.py
 [2017-02-26 10:52:04,875] Leos-MacBook-Air.local/INFO/logger: Starting Locust 0.8a2
 [2017-02-26 10:52:04,897] Leos-MacBook-Air.local/INFO/logger: Starting web monitor at *:8089
 [2017-02-26 01:32:15,757] Leos-MacBook-Air.local/INFO/locust.runners: Client 'Leos-MacBook-Air.local_9cfcb5acf942af4b52063c138952a999' reported as ready. Current

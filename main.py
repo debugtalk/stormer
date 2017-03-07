@@ -23,8 +23,8 @@ def main():
                                   help="Only start locust slaves.")
     locust_subparser.add_argument('--master-host', dest="master_host", default='127.0.0.1',
                                   help="Host or IP address of locust master for distributed load testing.")
-    locust_subparser.add_argument('--slaves-num', dest="slaves_num", default='1',
-                                  help="Specify number of locust slaves.")
+    locust_subparser.add_argument('--slaves-num', dest="slaves_num", default=None,
+                                  help="Specify number of locust slaves, default to machine's cpu count.")
     locust_subparser.set_defaults(func=main_locust)
 
     sput_subparser = subparsers.add_parser('sput', help='scp wrapper for putting files.',
@@ -51,7 +51,6 @@ def main_locust(args):
     args.locustfile = locustfile.strip()
     port = args.port.strip()
     args.port = int(port) if port.isdigit() else None
-    args.slaves_num = int(args.slaves_num.strip())
 
     LocustStarter().start(args)
 

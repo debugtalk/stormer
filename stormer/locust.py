@@ -1,6 +1,6 @@
 import sys
 import signal
-from multiprocessing import Process
+import multiprocessing
 import socket
 import gevent
 from locust import runners
@@ -51,14 +51,19 @@ class LocustStarter(object):
         if args.port:
             master_options.port = args.port
 
-        for _ in range(args.slaves_num):
-            p_slave = Process(target=start_slave, args=(locust_classes,))
+        if args.slaves_num:
+            slaves_num = int(args.slaves_num.strip())
+        else:
+            slaves_num = multiprocessing.cpu_count()
+
+        for _ in range(slaves_num):
+            p_slave = multiprocessing.Process(target=start_slave, args=(locust_classes,))
             p_slave.start()
 
         try:
             if not args.slave_only:
                 master_options.master_host = args.master_host
-                p_master = Process(target=start_master, args=(locust_classes,))
+                p_master = multiprocessing.Process(target=start_master, args=(locust_classes,))
                 p_master.start()
                 p_master.join()
             else:

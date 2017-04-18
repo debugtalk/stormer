@@ -12,7 +12,7 @@ from stormer.logger import logger
 
 def parse_locustfile(locustfile):
     docstring, locusts = load_locustfile(locustfile)
-    locust_classes = locusts.values()
+    locust_classes = list(locusts.values())
     return locust_classes
 
 def start_master(locust_classes):

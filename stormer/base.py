@@ -18,6 +18,7 @@ class DummyOptions(object):
         self.master_port = 5557
         self.master_bind_host = "*"
         self.master_bind_port = 5557
+        self.expect_slaves = 1
         self.no_web = False
         self.num_clients = 1
         self.hatch_rate = 1

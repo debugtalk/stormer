@@ -1,6 +1,5 @@
 import gevent.monkey; gevent.monkey.patch_all()
 import sys
-import signal
 import multiprocessing
 import socket
 import gevent
@@ -44,28 +43,24 @@ def start_slave(locust_classes):
 
 
 class LocustStarter(object):
-    def __init__(self):
+    def __init__(self, master_host, port):
         logger.info("Starting Locust %s" % version)
+        master_options.master_host = master_host
+        master_options.port = port
 
-    def start(self, args):
-        locust_classes = parse_locustfile(args.locustfile)
-        master_options.port = args.port
+    def start(self, locustfile, slaves_num, slave_only):
+        locust_classes = parse_locustfile(locustfile)
 
-        if args.slaves_num:
-            slaves_num = int(args.slaves_num.strip())
-        else:
-            slaves_num = multiprocessing.cpu_count()
+        slaves_num = slaves_num or multiprocessing.cpu_count()
 
         for _ in range(slaves_num):
             p_slave = multiprocessing.Process(target=start_slave, args=(locust_classes,))
+            p_slave.daemon = True
             p_slave.start()
 
         try:
-            if not args.slave_only:
-                master_options.master_host = args.master_host
-                p_master = multiprocessing.Process(target=start_master, args=(locust_classes,))
-                p_master.start()
-                p_master.join()
+            if not slave_only:
+                start_master(locust_classes)
             else:
                 p_slave.join()
         except KeyboardInterrupt:

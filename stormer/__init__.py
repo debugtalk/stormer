@@ -23,13 +23,13 @@ def main():
         '-P', '--port', '--web-port', default=8089, type=int,
         help="Port on which to run web host, default is 8089.")
     locust_subparser.add_argument(
-        '--slave-only', action='store_true', default=False,
+        '--slave-only', action='store_true',
         help="Only start locust slaves.")
     locust_subparser.add_argument(
         '--master-host', default='127.0.0.1',
         help="Host or IP address of locust master for distributed load testing.")
     locust_subparser.add_argument(
-        '--slaves-num',
+        '--slaves-num', type=int,
         help="Specify number of locust slaves, default to machine's cpu count.")
     locust_subparser.set_defaults(func=main_locust)
 
@@ -49,20 +49,24 @@ def main():
 
 def main_locust(args):
     locustfile = args.locustfile
-    if locustfile is None:
+    if not locustfile:
         logger.error("locustfile must be specified! use the -f option.")
         sys.exit(0)
 
-    LocustStarter().start(args)
+    LocustStarter(args.master_host, args.port).start(
+        args.locustfile,
+        args.slaves_num,
+        args.slave_only
+    )
 
 def main_sput(args):
     hostsfile = args.hostsfile
-    if hostsfile is None:
+    if not hostsfile:
         logger.error("hostsfile must be specified! use the --hostsfile option.")
         sys.exit(0)
 
     localpath = args.localpath
-    if localpath is None:
+    if not localpath:
         logger.error("localpath must be specified! use the --localpath option.")
         sys.exit(0)
 

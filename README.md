@@ -1,6 +1,6 @@
 # Stormer
 
-Wrappers for making load test more convienient.
+Wrappers for making load test with [`locust`](https://github.com/locustio/locust) more convienient.
 
 ## Features
 
@@ -24,7 +24,7 @@ Currently, Stormer supports two subcommands.
 $ python main.py -h
 usage: main.py [-h] {locust,sput} ...
 
-Wrappers for making load test more convienient.
+Wrappers for making load test with locust more convienient.
 
 positional arguments:
   {locust,sput}  sub-command help
@@ -102,6 +102,5 @@ $ python main.py locust -f examples/demo_task.py --slaves-only --master-host <ma
 Copy local directory to all remote hosts.
 
 ```text
-$ python main.py sput --hostsfile examples/hosts.yml --localpath examples --remotepa
-th /root/examples
+$ python main.py sput --hostsfile examples/hosts.yml --localpath examples --remotepath /root/examples
 ```

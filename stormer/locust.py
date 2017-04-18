@@ -1,3 +1,4 @@
+import gevent.monkey; gevent.monkey.patch_all()
 import sys
 import signal
 import multiprocessing
@@ -48,8 +49,7 @@ class LocustStarter(object):
 
     def start(self, args):
         locust_classes = parse_locustfile(args.locustfile)
-        if args.port:
-            master_options.port = args.port
+        master_options.port = args.port
 
         if args.slaves_num:
             slaves_num = int(args.slaves_num.strip())

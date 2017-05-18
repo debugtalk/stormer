@@ -53,10 +53,9 @@ def main_locust(args):
         logger.error("locustfile must be specified! use the -f option.")
         sys.exit(0)
 
-    LocustStarter(args.master_host, args.port).start(
+    LocustStarter(args.master_host, args.port, args.slave_only).start(
         args.locustfile,
-        args.slaves_num,
-        args.slave_only
+        args.slaves_num
     )
 
 def main_sput(args):

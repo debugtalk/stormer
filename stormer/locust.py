@@ -43,25 +43,29 @@ def start_slave(locust_classes):
 
 
 class LocustStarter(object):
-    def __init__(self, master_host, port):
+    def __init__(self, master_host, port, slave_only=False):
         logger.info("Starting Locust %s" % version)
         master_options.master_host = master_host
         master_options.port = port
+        slave_options.master_host = master_host
+        slave_options.port = port
+        self.slave_only = slave_only
 
-    def start(self, locustfile, slaves_num, slave_only):
+    def start(self, locustfile, slaves_num):
         locust_classes = parse_locustfile(locustfile)
-
         slaves_num = slaves_num or multiprocessing.cpu_count()
 
+        processes = []
         for _ in range(slaves_num):
             p_slave = multiprocessing.Process(target=start_slave, args=(locust_classes,))
             p_slave.daemon = True
             p_slave.start()
+            processes.append(p_slave)
 
         try:
-            if not slave_only:
-                start_master(locust_classes)
+            if self.slave_only:
+                [process.join() for process in processes]
             else:
-                p_slave.join()
+                start_master(locust_classes)
         except KeyboardInterrupt:
             sys.exit(0)
